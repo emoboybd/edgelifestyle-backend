@@ -1,0 +1,25 @@
+{
+  "name": "edge_lifestyle_backend",
+  "version": "1.0.0",
+  "description": "backend for edge-lifestyle using node JS and mongodb",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "start:prod": "NODE_ENV=production nodemon server.js",
+    "debug": "ndb server.js"
+  },
+  "author": "shakil rahman",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.3",
+    "morgan": "^1.10.0",
+    "ndb": "^1.1.5",
+    "nodemon": "^2.0.22",
+    "validator": "^13.9.0"
+  }
+}
