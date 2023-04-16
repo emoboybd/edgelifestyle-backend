@@ -1,9 +1,25 @@
+const APIFeatures = require("../utils/APIFeatures");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const Product = require("./../models/productModel");
 
+exports.aliasEidCollection = (req, res, next) => {
+  // category
+  req.query.size = "XL";
+  req.query.limit = 10;
+  req.query.sort = "-price";
+
+  next();
+};
+
 exports.getAllProducts = catchAsync(async (req, res, next) => {
-  const products = await Product.find();
+  const features = new APIFeatures(Product.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .panginate();
+
+  const products = await features.query;
 
   res.status(200).json({
     status: "success",

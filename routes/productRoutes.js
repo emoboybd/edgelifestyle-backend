@@ -5,6 +5,9 @@ const authController = require("./../controllers/authController");
 const router = express.Router();
 
 router
+  .route("/eid-collection")
+  .get(productController.aliasEidCollection, productController.getAllProducts);
+router
   .route("/")
   .get(productController.getAllProducts)
   .post(authController.protect, productController.createProduct);
