@@ -13,7 +13,10 @@ const productSchema = new mongoose.Schema(
       required: [true],
       unique: [true, "Product with the same code already exists"],
     },
-    productImage: String,
+    productImg: {
+      type: String,
+      default: "default.jpg",
+    },
     price: {
       type: Number,
       required: [true, "Product must have a price"],
