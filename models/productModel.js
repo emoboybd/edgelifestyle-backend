@@ -15,7 +15,11 @@ const productSchema = new mongoose.Schema(
     },
     productImg: {
       type: String,
-      default: "default.jpg",
+      default: "default_product.jpg",
+    },
+    productImgUrl: {
+      type: String,
+      default: "public/img/products/default_product.jpg",
     },
     price: {
       type: Number,
@@ -29,6 +33,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, "Product must have a description"],
     },
+    addedBy: String,
     category: {
       type: String,
       default: "panjabi",

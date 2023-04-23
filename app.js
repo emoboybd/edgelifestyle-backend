@@ -14,6 +14,13 @@ const hpp = require("hpp");
 const app = express();
 
 // 1) GLOBAL MIDDLEWARES
+// implement cors
+app.use(cors());
+
+app.options("*", cors());
+// set public folder to static to be accisible anywhere
+app.use("/public", express.static("public"));
+
 // Set security HTTP headers
 app.use(helmet());
 

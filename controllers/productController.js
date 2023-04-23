@@ -7,6 +7,7 @@ const catchAsync = require("../utils/catchAsync");
 const Product = require("./../models/productModel");
 
 const multerStorage = multer.memoryStorage();
+
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
@@ -25,12 +26,13 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
   req.file.filename = `product-${req.user.id}-${Date.now()}.jpeg`;
+  req.file.path = `public/img/products/${req.file.filename}`;
 
   await sharp(req.file.buffer)
     .resize(700, 900)
     .toFormat("jpeg")
     .jpeg({ quality: 90 })
-    .toFile(`public/img/products/${req.file.filename}`);
+    .toFile(req.file.path);
 
   next();
 });
@@ -78,7 +80,11 @@ exports.getProduct = catchAsync(async (req, res, next) => {
 });
 
 exports.createProduct = catchAsync(async (req, res, next) => {
-  if (req.file) req.body.productImg = req.file.filename;
+  if (req.file) {
+    req.body.productImg = req.file.filename;
+    req.body.productImgUrl = req.file.path;
+  }
+
   const newProduct = await Product.create(req.body);
 
   res.status(201).json({
@@ -92,11 +98,14 @@ exports.createProduct = catchAsync(async (req, res, next) => {
 exports.deleteProduct = catchAsync(async (req, res, next) => {
   const product = await Product.findById(req.params.id);
   const productImg = product.productImg;
+  console.log(productImg);
+  if (!productImg.startsWith("default")) {
+    fs.unlink(`${__dirname}/../public/img/products/${productImg}`, (err) => {
+      if (err) return next(new AppError("No images found to delete!", 404));
+      console.log(`${productImg} was deleted`);
+    });
+  }
 
-  fs.unlink(`${__dirname}/../public/img/products/${productImg}`, (err) => {
-    if (err) return next(new AppError("No images found to delete!", 404));
-    console.log(`${productImg} was deleted`);
-  });
   await Product.findByIdAndDelete(req.params.id);
 
   res.status(204).json({
@@ -106,7 +115,12 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
 });
 
 exports.updateProduct = catchAsync(async (req, res, next) => {
-  if (req.file) req.body.productImg = req.file.filename;
+  if (req.file) {
+    req.body.productImg = req.file.filename;
+    req.body.productImgUrl = req.file.path;
+  }
+
+  console.log(req.body);
   const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
     req.body,
