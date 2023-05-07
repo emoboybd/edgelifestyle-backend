@@ -120,7 +120,6 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
     req.body.productImgUrl = req.file.path;
   }
 
-  console.log(req.body);
   const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
     req.body,
